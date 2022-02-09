@@ -1,0 +1,12 @@
+*.log
+*.bak
+*~
+.*.swp
+.DS_Store
+
+.envrc
+
+*_id_ecdsa
+id_ecdsa*
+*/restic/*
+restic.yml
