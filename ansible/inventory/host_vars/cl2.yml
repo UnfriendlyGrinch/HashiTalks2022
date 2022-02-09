@@ -1,0 +1,14 @@
+vault_host: cl2
+
+restic_enabled: yes
+restic_project: hashitalks
+
+restic_remote_server:
+  - host: 10.0.10.43
+    alias: restic_main_backup
+    port: 22
+    enabled: yes
+
+restic:
+  - name: nginx
+    path: /data

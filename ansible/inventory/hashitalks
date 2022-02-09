@@ -1,0 +1,5 @@
+[hashi_cluster]
+cl1 ansible_host=10.0.10.40 default_hostname=cl1
+cl2 ansible_host=10.0.10.41 default_hostname=cl2
+cl3 ansible_host=10.0.10.42 default_hostname=cl3
+cl4 ansible_host=10.0.10.43 default_hostname=cl4

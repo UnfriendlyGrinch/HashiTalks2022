@@ -1,0 +1,35 @@
+---
+- hosts: all
+  become: yes
+  serial: 1
+  vars:
+    on_localhost: yes
+    source_server: cl2
+    backup_name: nginx
+    backup_server: 10.0.10.43
+    restore_directory: /tmp/hashitalks
+    snapshot: latest
+    absolute_path: ''
+
+  tasks:
+    - name: Add the source server to the ansible-playbook in-memory inventory
+      ansible.builtin.add_host:
+        name: "{{ source_server }}"
+      tags:
+        - restic
+        - restore
+
+    - block:
+      - name: Gather facts about localhost
+        ansible.builtin.setup:
+        delegate_to: localhost
+        delegate_facts: yes
+
+      - name: Restore snapshot on localhost
+        ansible.builtin.import_role:
+          name: bckrestore
+        delegate_to: localhost
+      when: on_localhost
+      tags:
+        - restic
+        - restore
