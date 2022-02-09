@@ -1,0 +1,55 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: restic-init
+spec:
+    template:
+      spec:
+        serviceAccountName: vault-auth
+
+        initContainers:
+        - name: vault-agent
+          image: vault
+          args:
+          - agent
+          - -config=/etc/vault/vault-agent-config.hcl
+          - -log-level=debug
+          env:
+          - name: VAULT_ADDR
+            value: http://10.0.10.40:30000
+          volumeMounts:
+          - mountPath: /etc/vault
+            name: config
+          - mountPath: /etc/secrets
+            name: shared-data
+
+        containers:
+        - name: init
+          image: restic/restic
+          command:
+          - "/bin/sh"
+          - "-c"
+          - "/usr/bin/restic init -o sftp.command='ssh backup@10.0.10.43 -i /mnt/restic-id_ecdsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -s sftp'"
+          env:
+          - name: RESTIC_REPOSITORY
+            value: sftp://backup/restic/hashitalks/cl2/nginx
+          - name: RESTIC_PASSWORD_FILE
+            value: /mnt/nginx-password
+          volumeMounts:
+          - mountPath: /mnt
+            name: shared-data
+            readOnly: true  
+
+        volumes:
+        - configMap:
+            items:
+            - key: vault-agent-config.hcl
+              path: vault-agent-config.hcl
+            name: vault-agent-config-nginx
+          name: config
+        - emptyDir: {}
+          name: shared-data
+
+        nodeName: cl2
+        restartPolicy: OnFailure
+
