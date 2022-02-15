@@ -36,6 +36,14 @@ Token used for authentication within Vault.
 ```bash
 export VAULT_TOKEN=*.************************
 ```
+# Variables 
+* on_localhost: a Boolean which determines whether the restore is performed on localhost or not.
+* source_server: a String which specifies the server whose snapshot is to be restored.
+* backup_name: a String which specifies the backup name, as defined by the the restic variable in the corresponding host_vars file.
+* backup_server: a String which specifies one of the enabled backup servers.
+* restore_directory: a String which specifies where the data is to be restored.
+* snapshot (optional): a String which specifies the Snapshot ID to be restored. In case this is omitted (empty string), then the variable will fall back to latest.
+* absolute_path (optional): a String which specifies the absolute path in the snapshot of the file(s) or directory(ies) to be restored. In case this is omitted (empty string), then the entire snapshot is to be restored.
 
 # Using the `bckrestore` Ansible Role
 
